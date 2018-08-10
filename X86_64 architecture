@@ -1,0 +1,34 @@
+The long mode is activated through a control bit called LMA (Long Mode Active). 
+When the LMA is inactivated, the processor will operate in the standard x86 mode 
+and will be compatible to the operating systems and applications of 16 and 32 bits, 
+that is, it will be compatible with everything that exists nowadays. 
+When the LMA is activated (long mode), the 64-bit extension will be enabled, offering a new 64-bit CPU. 
+The long mode is also divided into two sub-modes: the 64-bit mode and the compatible mode. 
+These two sub-modes are controlled by the D and L bits, present at the descriptor pointed by the CS (Code Segment) register. 
+The compatible mode is interesting because it allows, as a program, to run 16- or 32-bit applications inside the 64-bit mode. 
+It is something similar to the virtual mode 86 of the 386 processors. Figure 1 shows an explanation of those modes.
+
+	CS.L=0 CS.D=0	CS.L=0 CS.D=1	CS.L=1 CS.D=0	CS.L=1 CS.D=1
+LMA=0
+Legal Mode	Standard 16-bit Mode	Standard 32-bit Mode	Standard 16-bit Mode	Standard 32-bit Mode
+LMA=1
+Long Mode Active	16-bit Compatibility Mode	32-bit Compatibility Mode	64-bit Mode	Reserved
+
+Figure 1: Operation modes of the x86-64 family.
+
+The old x86 mode (32 or 16 bits) is called Legal Mode (LMA=0). 
+When in this mode, the x86-64 CPUs can work with data of 16 or 32 bits. 
+Notice that, when in this mode, the state of the CS.L bit has no meaning, that is, it is a don’t care.
+
+When put in 64-bit Long Mode (LMA=1, CS.L=1 and CS.D=0), 
+the standard size of the operand is of 32 bits and the standard size for addressing is of 64 bits. 
+With the use of instruction prefixes, 
+the size of the operand can be altered to 64 or 16 bits and the size of the address to 32 bits.
+
+If set in the Long Mode, Compatibility Mode (LMA=1 and CS.L=0), 
+we have the binary compatibility with the applications written in x86 16 and 32 bits. 
+That is really interesting, 
+because an operating system in long mode can run the present 16- and 32-bit programs only by setting to zero the CS.L bit of the descriptor pointed by the code segment of those applications. 
+In the compatible sub-mode, the CS.D bit continues to select between the 16- and 32-bit modes. 
+It should also be noticed that, when the processor is in legal mode, the state of the CS.L bit has no meaning, 
+that is, it is a don’t care. Figure 2 shows the programming details of this new architecture.
